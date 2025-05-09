@@ -56,42 +56,74 @@ export class Game {
         if (card == null) {
             throw new Error("Error while drawing");
         }
+
         this.#gameState[this.activeColumn].push(card);
         this.#render();
     }
 
-    pick = (card: CardValue, columnIndex: number)=> {
-        if (this.#activeCards.includes(card)) {
+    pick = (card: CardValue)=> {
+        if (this.#activeCards.includes(card) && this.#isValidSubtraction(card)) {
             this.#activeCards = this.#activeCards.filter(c => c !== card);
-        } else {
-            if (this.#activeCards.length < 3 && columnIndex === this.activeColumn) {
-                this.#activeCards.push(card);
-            }
         }
+        else if (this.#activeCards.length < 3 && this.#isValidAddition(card)) {
+            this.#activeCards.push(card);
+        }
+
+        this.#render();
+
+        if (this.#activeCards.length === 3) {
+            this.play();
+        }
+
         this.#render();
     }
 
-    play = (fromFront: number, fromBack: number) => {
-        if (
-            (fromFront < 1 || fromFront > 3) ||
-            (fromBack < 0 || fromBack > 2) ||
-            (fromFront + fromBack !== 3) ||
-            (this.#gameState[this.activeColumn].length < 3)
-        ) {
-            throw new Error("Not a valid move");
+    #pickedIsOnEdge(card: CardValue): boolean {
+        const stack = this.#gameState[this.activeColumn];
+        const cardIndex = stack.findIndex(c => c === card);
+        const pickedIndexes = this.#activeCards.map(activeCard => stack.findIndex(c => c === activeCard));
+        if (cardIndex === 1) return true;
+        if (cardIndex === 0 && pickedIndexes.includes(1)) return false;
+        return (!pickedIndexes.includes(cardIndex - 1))
+    }
+
+    #unpickedIsOnEdge(card: CardValue): boolean {
+        const stack = this.#gameState[this.activeColumn];
+        const unpickedStack = stack.filter(c => !this.#activeCards.includes(c));
+        const cardIndex = unpickedStack.findIndex(c => c === card);
+        return cardIndex === 0 || cardIndex === unpickedStack.length - 1;
+    }
+
+    #isOnEdge = (card: CardValue) => {
+        if (this.#activeCards.includes(card)) {
+            return this.#pickedIsOnEdge(card);
         }
+        return this.#unpickedIsOnEdge(card);
+    }
 
-        let cardsFromFront = this.#gameState[this.activeColumn].slice(fromFront);
-        let cardsFromBack = this.#gameState[this.activeColumn].slice(0, fromBack);
+    #isValidSubtraction = (card: CardValue): boolean => {
+        if (!this.#activeCards.includes(card)) return false;
+        return this.#pickedIsOnEdge(card);
+    }
 
-        let sum = [...cardsFromFront, ...cardsFromBack].reduce((acc, curr) => acc + this.#getValue(curr), 0);
+    #isValidAddition = (card: CardValue): boolean => {
+        if (this.#activeCards.includes(card)) return false;
+        return this.#unpickedIsOnEdge(card);
+    }
+
+    play = () => {
+        let sum = this.#activeCards.reduce((acc, curr) => acc + this.#getValue(curr), 0);
 
         if (![10, 20, 30].includes(sum)) {
-            throw new Error("Not a valid move");
+            console.log("Not a valid move");
+            this.#activeCards = [];
+            this.#render();
+            return
         }
 
-        this.#deck = [...cardsFromBack, ...cardsFromFront, ...this.#deck];
-        this.#gameState[this.activeColumn] = this.#gameState[this.activeColumn].slice(fromBack, -fromFront);
+        this.#deck = [...this.#activeCards, ...this.#deck];
+        this.#gameState[this.activeColumn] = this.#gameState[this.activeColumn].filter(c => !this.#activeCards.includes(c));
+        this.#activeCards = [];
         this.#render();
     }
 

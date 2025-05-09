@@ -5,8 +5,8 @@
     const game = new Game(8);
     // let activeCards: CardValue[] = $state([]);
 
-    const toggleActiveCard = (card: CardValue, columnIndex: number, stackIndex: number) => {
-        game.pick(card, columnIndex)
+    const toggleActiveCard = (card: CardValue) => {
+        game.pick(card)
     }
 
     let gameState = game.gameState;
@@ -24,7 +24,7 @@
                 {#each column as card, stackIndex}
                     <Card value={card} stackIndex={stackIndex} active={$activeCards.includes(card)}
                           onClick={() => {
-                          toggleActiveCard(card, columnIndex, stackIndex)
+                          toggleActiveCard(card)
                           }}/>
                 {/each}
             </div>
