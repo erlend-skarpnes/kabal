@@ -4,9 +4,6 @@
     export type CardValue = Exclude<keyof typeof cards, "joker">;
 
     const props: { value: CardValue; stackIndex: number, active: boolean, onClick: () => void } = $props();
-
-    console.log({val: props.value, idx: props.stackIndex});
-
 </script>
 <div class="{props.stackIndex === 0 ? 'first-card' : 'non-first-card'}">
     <button onclick={props.onClick}>

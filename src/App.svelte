@@ -1,6 +1,6 @@
 <script lang="ts">
     import Card, {type CardValue} from "./lib/Card.svelte";
-    import {Game} from "./lib/deck";
+    import {Game} from "./lib/game";
 
     const game = new Game(8);
     // let activeCards: CardValue[] = $state([]);
@@ -19,7 +19,7 @@
         <button onclick={game.resetGame}>Reset</button>
     </div>
     <div class="play-area">
-        {#each $gameState as column, columnIndex}
+        {#each $gameState as column}
             <div class="column">
                 {#each column as card, stackIndex}
                     <Card value={card} stackIndex={stackIndex} active={$activeCards.includes(card)}
