@@ -81,10 +81,23 @@ export class Game {
     #pickedIsOnEdge(card: CardValue): boolean {
         const stack = this.#gameState[this.activeColumn];
         const cardIndex = stack.findIndex(c => c === card);
-        const pickedIndexes = this.#activeCards.map(activeCard => stack.findIndex(c => c === activeCard));
-        if (cardIndex === 1) return true;
-        if (cardIndex === 0 && pickedIndexes.includes(1)) return false;
-        return (!pickedIndexes.includes(cardIndex - 1))
+        const pickedIndexes = this.#activeCards.map(activeCard => stack.findIndex(c => c === activeCard)).sort();
+
+        if (pickedIndexes.length === stack.length) return true;
+
+        let splitIndex = 0;
+
+        for (let i = 0; i <= pickedIndexes.length; i++) {
+            if (!pickedIndexes.includes(i)) {
+                splitIndex = i;
+                break;
+            }
+        }
+
+        let startStack = pickedIndexes.slice(0, splitIndex).sort();
+        let endStack = pickedIndexes.slice(splitIndex).sort();
+
+        return [startStack[startStack.length - 1], endStack[0]].includes(cardIndex);
     }
 
     #unpickedIsOnEdge(card: CardValue): boolean {
