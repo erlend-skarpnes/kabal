@@ -8,6 +8,7 @@ export class Game {
     activeColumn: number = -1;
     gameState: Writable<CardValue[][]> = writable([]);
     activeCards: Writable<CardValue[]> = writable([]);
+    deck: Writable<CardValue[]> = writable([]);
     #activeCards: CardValue[] = [];
     #gameState: CardValue[][] = [];
     #deck: CardValue[] = [];
@@ -24,6 +25,7 @@ export class Game {
     #render = () => {
         this.gameState.set(this.#gameState);
         this.activeCards.set(this.#activeCards);
+        this.deck.set(this.#deck);
     }
 
     resetGame = async () => {
@@ -48,6 +50,7 @@ export class Game {
         }
 
         if (this.#deck.length === 0) {
+            this.#render();
             throw new Error("Deck is empty");
         }
 

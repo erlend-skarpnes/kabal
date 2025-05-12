@@ -3,12 +3,12 @@
     import {Game} from "./lib/game";
 
     const game = new Game(8);
-    // let activeCards: CardValue[] = $state([]);
 
     const toggleActiveCard = (card: CardValue) => {
         game.pick(card)
     }
 
+    let deck = game.deck;
     let gameState = game.gameState;
     let activeCards = game.activeCards;
 </script>
@@ -19,6 +19,11 @@
         <button onclick={game.resetGame}>Reset</button>
     </div>
     <div class="play-area">
+        <div class="column">
+            {#if $deck.length > 0}
+                <img src="public/cardback.jpg" width="100px" alt="cardback"/>
+            {/if}
+        </div>
         {#each $gameState as column}
             <div class="column">
                 {#each column as card, stackIndex}
@@ -45,7 +50,7 @@
 
     .play-area {
         display: grid;
-        grid-template-columns: repeat(8, 1fr);
+        grid-template-columns: repeat(9, 1fr);
         gap: 1rem;
     }
 
