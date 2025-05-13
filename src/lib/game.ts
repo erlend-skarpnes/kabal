@@ -1,6 +1,7 @@
 import cards from "@younestouati/playing-cards-standard-deck";
 import type { CardValue } from "./Card.svelte";
 import {writable, type Writable} from "svelte/store";
+import {draw} from "svelte/transition";
 
 
 export class Game {
@@ -13,6 +14,7 @@ export class Game {
     #gameState: CardValue[][] = [];
     #deck: CardValue[] = [];
     readonly #maxColumns: number = 0;
+    #isResetting: boolean = true;
 
     constructor(maxColumns: number) {
         this.#maxColumns = maxColumns;
@@ -29,6 +31,7 @@ export class Game {
     }
 
     resetGame = async () => {
+        this.#isResetting = true;
         this.activeColumn = -1;
         this.#deck = Object.keys(cards).filter(card => card !== "joker") as CardValue[];
         this.#shuffleDeck();
@@ -40,13 +43,18 @@ export class Game {
         for (let i = 0; i < this.#maxColumns * 2; i += 1) {
             setTimeout(this.draw, 50*i);
         }
+        setTimeout(() => {this.#isResetting = false}, 50*this.#maxColumns * 2)
     }
 
-    draw = () => {
+    draw = (): void => {
         this.#activeCards = [];
         this.activeColumn += 1;
         if (this.activeColumn === this.#maxColumns) {
             this.activeColumn = 0;
+        }
+
+        if (this.#gameState[this.activeColumn].length === 0 && !this.#isResetting) {
+            return this.draw();
         }
 
         if (this.#deck.length === 0) {
