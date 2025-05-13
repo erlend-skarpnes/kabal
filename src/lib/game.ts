@@ -3,16 +3,18 @@ import type { CardValue } from "./Card.svelte";
 import {writable, type Writable} from "svelte/store";
 import {draw} from "svelte/transition";
 
+type GameState = "playing" | "won" | "lost";
 
 export class Game {
-
     activeColumn: number = -1;
-    gameState: Writable<CardValue[][]> = writable([]);
+    board: Writable<CardValue[][]> = writable([]);
     activeCards: Writable<CardValue[]> = writable([]);
     deck: Writable<CardValue[]> = writable([]);
+    gameState: Writable<GameState> = writable("playing");
     #activeCards: CardValue[] = [];
-    #gameState: CardValue[][] = [];
+    #board: CardValue[][] = [];
     #deck: CardValue[] = [];
+    #gameState: GameState = "playing";
     readonly #maxColumns: number = 0;
     #isResetting: boolean = true;
 
@@ -25,19 +27,21 @@ export class Game {
     }
 
     #render = () => {
-        this.gameState.set(this.#gameState);
+        this.board.set(this.#board);
         this.activeCards.set(this.#activeCards);
         this.deck.set(this.#deck);
+        this.gameState.set(this.#gameState);
     }
 
     resetGame = async () => {
         this.#isResetting = true;
+        this.#gameState = "playing";
         this.activeColumn = -1;
         this.#deck = Object.keys(cards).filter(card => card !== "joker") as CardValue[];
         this.#shuffleDeck();
-        this.#gameState = [];
+        this.#board = [];
         for (let i = 0; i < this.#maxColumns; i += 1) {
-            this.#gameState.push([]);
+            this.#board.push([]);
         }
         this.#render();
         for (let i = 0; i < this.#maxColumns * 2; i += 1) {
@@ -53,13 +57,13 @@ export class Game {
             this.activeColumn = 0;
         }
 
-        if (this.#gameState[this.activeColumn].length === 0 && !this.#isResetting) {
+        if (this.#board[this.activeColumn].length === 0 && !this.#isResetting) {
             return this.draw();
         }
 
         if (this.#deck.length === 0) {
+            this.#gameState = "lost";
             this.#render();
-            throw new Error("Deck is empty");
         }
 
         let card = this.#deck.pop();
@@ -68,7 +72,7 @@ export class Game {
             throw new Error("Error while drawing");
         }
 
-        this.#gameState[this.activeColumn].push(card);
+        this.#board[this.activeColumn].push(card);
         this.#render();
     }
 
@@ -90,7 +94,7 @@ export class Game {
     }
 
     #pickedIsOnEdge(card: CardValue): boolean {
-        const stack = this.#gameState[this.activeColumn];
+        const stack = this.#board[this.activeColumn];
         const cardIndex = stack.findIndex(c => c === card);
         const pickedIndexes = this.#activeCards.map(activeCard => stack.findIndex(c => c === activeCard)).sort();
 
@@ -112,7 +116,7 @@ export class Game {
     }
 
     #unpickedIsOnEdge(card: CardValue): boolean {
-        const stack = this.#gameState[this.activeColumn];
+        const stack = this.#board[this.activeColumn];
         const unpickedStack = stack.filter(c => !this.#activeCards.includes(c));
         const cardIndex = unpickedStack.findIndex(c => c === card);
         return cardIndex === 0 || cardIndex === unpickedStack.length - 1;
@@ -146,7 +150,8 @@ export class Game {
         }
 
         this.#deck = [...this.#activeCards, ...this.#deck];
-        this.#gameState[this.activeColumn] = this.#gameState[this.activeColumn].filter(c => !this.#activeCards.includes(c));
+        this.#board[this.activeColumn] = this.#board[this.activeColumn].filter(c => !this.#activeCards.includes(c));
+        if (this.#board.every(c => c.length === 0)) this.#gameState ="won";
         this.#activeCards = [];
         this.#render();
     }

@@ -11,8 +11,9 @@
     let anchorEl: HTMLElement;
 
     let deck = game.deck;
-    let gameState = game.gameState;
+    let board = game.board;
     let activeCards = game.activeCards;
+    let gameState = game.gameState;
 </script>
 
 <main>
@@ -26,7 +27,7 @@
                 <img src="public/cardback.jpg" width="100px" class="deck" alt="cardback" />
             {/if}
         </div>
-        {#each $gameState as column}
+        {#each $board as column}
             <div class="column">
                 {#each column as card, stackIndex}
                     <Card value={card} stackIndex={stackIndex} active={$activeCards.includes(card)}
@@ -39,6 +40,12 @@
             </div>
         {/each}
     </div>
+    {#if $gameState === "won"}
+        <p>Du vant!</p>
+    {/if}
+    {#if $gameState === "lost"}
+        <p>Du tapte!</p>
+    {/if}
 </main>
 
 <style>
