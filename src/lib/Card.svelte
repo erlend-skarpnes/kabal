@@ -1,14 +1,19 @@
 <script lang="ts">
     import cards from "@younestouati/playing-cards-standard-deck";
+    import {flyFromAnchor} from "./transition";
 
     export type CardValue = Exclude<keyof typeof cards, "joker">;
 
-    const props: { value: CardValue; stackIndex: number, active: boolean, onClick: () => void } = $props();
+    const props: { value: CardValue; stackIndex: number, active: boolean, onClick: () => void, transitionStartElement: HTMLElement } = $props();
 </script>
-<div class="{props.stackIndex === 0 ? 'first-card' : 'non-first-card'}">
-    <button onclick={props.onClick}>
-        <img src={`data:image/svg+xml;base64,${cards[props.value]}`} alt={props.value} class={ props.active ? "active" : "not-active" }/>
-    </button>
+
+<div class="{props.stackIndex === 0 ? 'first-card' : 'non-first-card'}"
+     transition:flyFromAnchor={{anchor: props.transitionStartElement}}>
+    <div class="front">
+        <button onclick={props.onClick}>
+            <img src={`data:image/svg+xml;base64,${cards[props.value]}`} alt={props.value} class={ props.active ? "active" : "not-active" }/>
+        </button>
+    </div>
 </div>
 
 <style>
@@ -40,5 +45,4 @@
         cursor: pointer;
         transition: border-color 0.25s;
     }
-
 </style>

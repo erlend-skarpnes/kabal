@@ -8,6 +8,8 @@
         game.pick(card)
     }
 
+    let anchorEl: HTMLElement;
+
     let deck = game.deck;
     let gameState = game.gameState;
     let activeCards = game.activeCards;
@@ -19,9 +21,9 @@
         <button onclick={game.resetGame}>Reset</button>
     </div>
     <div class="play-area">
-        <div class="column">
+        <div class="column" bind:this={anchorEl}>
             {#if $deck.length > 0}
-                <img src="public/cardback.jpg" width="100px" alt="cardback"/>
+                <img src="public/cardback.jpg" width="100px" class="deck" alt="cardback" />
             {/if}
         </div>
         {#each $gameState as column}
@@ -30,7 +32,9 @@
                     <Card value={card} stackIndex={stackIndex} active={$activeCards.includes(card)}
                           onClick={() => {
                           toggleActiveCard(card)
-                          }}/>
+                          }}
+                          transitionStartElement={anchorEl}
+                    />
                 {/each}
             </div>
         {/each}
@@ -57,6 +61,10 @@
     .column {
         display: flex;
         flex-direction: column;
+    }
+
+    .deck {
+        z-index: 9;
     }
 
 </style>
