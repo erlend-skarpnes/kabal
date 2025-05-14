@@ -4,12 +4,23 @@ import {writable, type Writable} from "svelte/store";
 
 type GameState = "playing" | "won" | "lost";
 
+interface State {
+    activeColumn: number;
+    board: CardValue[][]
+    deck: CardValue[]
+    gameState: GameState;
+    activeCards: CardValue[];
+}
+
 export class Game {
-    activeColumn: number = -1;
-    board: Writable<CardValue[][]> = writable([]);
-    activeCards: Writable<CardValue[]> = writable([]);
-    deck: Writable<CardValue[]> = writable([]);
-    gameState: Writable<GameState> = writable("playing");
+    state: Writable<State> = writable({
+        activeColumn: 0,
+        board: [],
+        deck: [],
+        gameState: "playing",
+        activeCards: []
+    });
+    #activeColumn: number = -1;
     #activeCards: CardValue[] = [];
     #board: CardValue[][] = [];
     #deck: CardValue[] = [];
@@ -26,16 +37,19 @@ export class Game {
     }
 
     #render = () => {
-        this.board.set(this.#board);
-        this.activeCards.set(this.#activeCards);
-        this.deck.set(this.#deck);
-        this.gameState.set(this.#gameState);
+        this.state.set({
+            activeColumn: this.#activeColumn,
+            board: this.#board,
+            deck: this.#deck,
+            gameState: this.#gameState,
+            activeCards: this.#activeCards
+        });
     }
 
     resetGame = async () => {
         this.#isResetting = true;
         this.#gameState = "playing";
-        this.activeColumn = -1;
+        this.#activeColumn = -1;
         this.#deck = Object.keys(cards).filter(card => card !== "joker") as CardValue[];
         this.#shuffleDeck();
         this.#board = [];
@@ -51,12 +65,12 @@ export class Game {
 
     draw = (): void => {
         this.#activeCards = [];
-        this.activeColumn += 1;
-        if (this.activeColumn === this.#maxColumns) {
-            this.activeColumn = 0;
+        this.#activeColumn += 1;
+        if (this.#activeColumn === this.#maxColumns) {
+            this.#activeColumn = 0;
         }
 
-        if (this.#board[this.activeColumn].length === 0 && !this.#isResetting) {
+        if (this.#board[this.#activeColumn].length === 0 && !this.#isResetting) {
             return this.draw();
         }
 
@@ -71,7 +85,7 @@ export class Game {
             throw new Error("Error while drawing");
         }
 
-        this.#board[this.activeColumn].push(card);
+        this.#board[this.#activeColumn].push(card);
         this.#render();
     }
 
@@ -93,7 +107,7 @@ export class Game {
     }
 
     #pickedIsOnEdge(card: CardValue): boolean {
-        const stack = this.#board[this.activeColumn];
+        const stack = this.#board[this.#activeColumn];
         const cardIndex = stack.findIndex(c => c === card);
         const pickedIndexes = this.#activeCards.map(activeCard => stack.findIndex(c => c === activeCard)).sort();
 
@@ -115,7 +129,7 @@ export class Game {
     }
 
     #unpickedIsOnEdge(card: CardValue): boolean {
-        const stack = this.#board[this.activeColumn];
+        const stack = this.#board[this.#activeColumn];
         const unpickedStack = stack.filter(c => !this.#activeCards.includes(c));
         const cardIndex = unpickedStack.findIndex(c => c === card);
         return cardIndex === 0 || cardIndex === unpickedStack.length - 1;
@@ -142,7 +156,7 @@ export class Game {
         }
 
         this.#deck = [...this.#activeCards, ...this.#deck];
-        this.#board[this.activeColumn] = this.#board[this.activeColumn].filter(c => !this.#activeCards.includes(c));
+        this.#board[this.#activeColumn] = this.#board[this.#activeColumn].filter(c => !this.#activeCards.includes(c));
         if (this.#board.every(c => c.length === 0)) this.#gameState ="won";
         this.#activeCards = [];
         this.#render();

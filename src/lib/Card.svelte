@@ -9,7 +9,7 @@
 
 <div class="card-container {props.stackIndex === 0 ? 'first-card' : 'non-first-card'}"
      transition:flyFromAnchor={{anchor: props.transitionStartElement}}>
-        <button onclick={props.onClick} class={ props.active ? "active" : "not-active" }>
+        <button onclick={props.onClick} class={ props.active ? "active" : "not-active" } >
             <img src={`data:image/svg+xml;base64,${cards[props.value]}`} alt={props.value} />
         </button>
 </div>

@@ -11,16 +11,13 @@
 
     let anchorEl: HTMLElement;
 
-    let deck = game.deck;
-    let board = game.board;
-    let activeCards = game.activeCards;
-    let gameState = game.gameState;
+    let gameState = game.state;
 </script>
 
 <main>
     <div class="play-area">
         <div class="column" bind:this={anchorEl}>
-            {#if $deck.length > 0}
+            {#if $gameState.deck.length > 0}
                 <div class="deck">
                     <Cardback onClick={game.draw} />
                 </div>
@@ -29,10 +26,10 @@
                 </div>
             {/if}
         </div>
-        {#each $board as column}
+        {#each $gameState.board as column}
             <div class="column">
                 {#each column as card, stackIndex}
-                    <Card value={card} stackIndex={stackIndex} active={$activeCards.includes(card)}
+                    <Card value={card} stackIndex={stackIndex} active={$gameState.activeCards.includes(card)}
                           onClick={() => {
                           toggleActiveCard(card)
                           }}
@@ -42,10 +39,10 @@
             </div>
         {/each}
     </div>
-    {#if $gameState === "won"}
+    {#if $gameState.gameState === "won"}
         <p>Du vant!</p>
     {/if}
-    {#if $gameState === "lost"}
+    {#if $gameState.gameState === "lost"}
         <p>Du tapte!</p>
     {/if}
 </main>
