@@ -1,6 +1,7 @@
 <script lang="ts">
     import Card, {type CardValue} from "./lib/Card.svelte";
     import {Game} from "./lib/game";
+    import Cardback from "./lib/Cardback.svelte";
 
     const game = new Game(8);
 
@@ -17,14 +18,15 @@
 </script>
 
 <main>
-    <div class="actions">
-        <button onclick={game.draw}>Draw</button>
-        <button onclick={game.resetGame}>Reset</button>
-    </div>
     <div class="play-area">
         <div class="column" bind:this={anchorEl}>
             {#if $deck.length > 0}
-                <img src="cardback.jpg" width="100px" class="deck" alt="cardback" />
+                <div class="deck">
+                    <Cardback onClick={game.draw} />
+                </div>
+                <div class="actions">
+                    <button onclick={game.resetGame}>Nytt spill</button>
+                </div>
             {/if}
         </div>
         {#each $board as column}
@@ -56,7 +58,8 @@
     }
 
     .actions {
-        padding: 2rem;
+        padding: 1rem 0;
+        max-width: 100px;
     }
 
     .play-area {

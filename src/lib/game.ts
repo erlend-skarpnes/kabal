@@ -1,7 +1,6 @@
 import cards from "@younestouati/playing-cards-standard-deck";
 import type { CardValue } from "./Card.svelte";
 import {writable, type Writable} from "svelte/store";
-import {draw} from "svelte/transition";
 
 type GameState = "playing" | "won" | "lost";
 
@@ -120,13 +119,6 @@ export class Game {
         const unpickedStack = stack.filter(c => !this.#activeCards.includes(c));
         const cardIndex = unpickedStack.findIndex(c => c === card);
         return cardIndex === 0 || cardIndex === unpickedStack.length - 1;
-    }
-
-    #isOnEdge = (card: CardValue) => {
-        if (this.#activeCards.includes(card)) {
-            return this.#pickedIsOnEdge(card);
-        }
-        return this.#unpickedIsOnEdge(card);
     }
 
     #isValidSubtraction = (card: CardValue): boolean => {
