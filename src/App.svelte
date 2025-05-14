@@ -24,7 +24,7 @@
     <div class="play-area">
         <div class="column" bind:this={anchorEl}>
             {#if $deck.length > 0}
-                <img src="public/cardback.jpg" width="100px" class="deck" alt="cardback" />
+                <img src="cardback.jpg" width="100px" class="deck" alt="cardback" />
             {/if}
         </div>
         {#each $board as column}

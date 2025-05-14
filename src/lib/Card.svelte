@@ -7,29 +7,26 @@
     const props: { value: CardValue; stackIndex: number, active: boolean, onClick: () => void, transitionStartElement: HTMLElement } = $props();
 </script>
 
-<div class="{props.stackIndex === 0 ? 'first-card' : 'non-first-card'}"
+<div class="card-container {props.stackIndex === 0 ? 'first-card' : 'non-first-card'}"
      transition:flyFromAnchor={{anchor: props.transitionStartElement}}>
-    <div class="front">
-        <button onclick={props.onClick}>
-            <img src={`data:image/svg+xml;base64,${cards[props.value]}`} alt={props.value} class={ props.active ? "active" : "not-active" }/>
+        <button onclick={props.onClick} class={ props.active ? "active" : "not-active" }>
+            <img src={`data:image/svg+xml;base64,${cards[props.value]}`} alt={props.value} />
         </button>
-    </div>
 </div>
 
 <style>
     img {
         box-sizing: border-box;
         width: 100px;
+        display: block;
+    }
+
+    .card-container {
         box-shadow: 0 -3px 3px #1a1a1a;
     }
 
     .active {
-        box-shadow: 0 0 10px orange;
-        border: solid 1px orange;
-    }
-
-    .not-active {
-        border: solid 1px transparent;
+        box-shadow: 0 0 0 3px orange;
     }
 
     .non-first-card {
@@ -37,12 +34,13 @@
     }
 
     button {
-        border-radius: 0;
+        all: unset;
         padding: 0;
-        font-size: 1em;
-        font-weight: 500;
-        font-family: inherit;
+        display: block;
         cursor: pointer;
-        transition: border-color 0.25s;
+        transition: box-shadow 0.1s;
+    }
+    button:hover {
+        box-shadow: 0 0 0 3px #646cff;
     }
 </style>
