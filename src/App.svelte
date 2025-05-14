@@ -26,14 +26,15 @@
                 </div>
             {/if}
         </div>
-        {#each $gameState.board as column}
+        {#each $gameState.board as column, columnIndex}
             <div class="column">
                 {#each column as card, stackIndex}
-                    <Card value={card} stackIndex={stackIndex} active={$gameState.activeCards.includes(card)}
+                    <Card value={card} stackIndex={stackIndex} picked={$gameState.activeCards.includes(card)}
                           onClick={() => {
                           toggleActiveCard(card)
                           }}
                           transitionStartElement={anchorEl}
+                          active={$gameState.activeColumn === columnIndex}
                     />
                 {/each}
             </div>

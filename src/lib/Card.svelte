@@ -4,12 +4,12 @@
 
     export type CardValue = Exclude<keyof typeof cards, "joker">;
 
-    const props: { value: CardValue; stackIndex: number, active: boolean, onClick: () => void, transitionStartElement: HTMLElement } = $props();
+    const props: { value: CardValue; stackIndex: number, picked: boolean, onClick: () => void, transitionStartElement: HTMLElement, active: boolean } = $props();
 </script>
 
 <div class="card-container {props.stackIndex === 0 ? 'first-card' : 'non-first-card'}"
      transition:flyFromAnchor={{anchor: props.transitionStartElement}}>
-        <button onclick={props.onClick} class={ props.active ? "active" : "not-active" } >
+        <button onclick={props.onClick} class={ props.picked ? "active" : "not-active" } disabled={!props.active} >
             <img src={`data:image/svg+xml;base64,${cards[props.value]}`} alt={props.value} />
         </button>
 </div>
@@ -37,11 +37,14 @@
         all: unset;
         padding: 0;
         display: block;
-        cursor: pointer;
         transition: box-shadow 0.1s;
     }
 
-    button:hover {
+    button:enabled {
+        cursor: pointer;
+    }
+
+    button:hover:enabled {
         box-shadow: 0 0 0 3px #646cff;
     }
 </style>
