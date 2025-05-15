@@ -25,7 +25,7 @@
 
 <style>
     img {
-        width: 100px;
+        width: 100%;
         display: block;
     }
 

@@ -17,7 +17,7 @@
 <style>
     img {
         box-sizing: border-box;
-        width: 100px;
+        width: 100%;
         display: block;
     }
 
@@ -30,7 +30,7 @@
     }
 
     .non-first-card {
-        margin-top: -100px;
+        margin-top: -100%;
     }
 
     button {

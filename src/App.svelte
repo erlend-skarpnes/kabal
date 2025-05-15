@@ -57,7 +57,7 @@
 
     .actions {
         padding: 1rem 0;
-        max-width: 100px;
+        max-width: 100%;
     }
 
     .play-area {
