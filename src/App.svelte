@@ -29,7 +29,7 @@
                 </div>
             {/if}
                 <div class="actions">
-                    <button onclick={game.resetGame}>Nytt spill</button>
+                    <button onclick={game.resetGame} disabled={$gameState.isResetting}>Nytt spill</button>
                 </div>
 
         </div>

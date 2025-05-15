@@ -10,6 +10,7 @@ interface State {
     deck: CardValue[]
     gameState: GameState;
     activeCards: CardValue[];
+    isResetting: boolean;
 }
 
 export class Game {
@@ -18,7 +19,8 @@ export class Game {
         board: [],
         deck: [],
         gameState: "playing",
-        activeCards: []
+        activeCards: [],
+        isResetting: false
     });
     #activeColumn: number = -1;
     #activeCards: CardValue[] = [];
@@ -26,19 +28,17 @@ export class Game {
     #deck: CardValue[] = [];
     #gameState: GameState = "playing";
     readonly #maxColumns: number = 0;
-    #isResetting: boolean = true;
+    #isResetting: boolean = false;
 
     constructor(maxColumns: number) {
         this.#maxColumns = maxColumns;
         if (!this.#loadGame()) {
-            console.log("could not load game");
             this.resetGame();
         }
     }
 
     #loadGame = () => {
         const jsonString = localStorage.getItem("state");
-        console.log(jsonString)
         if (jsonString == null) return false;
         const loadedState: State = JSON.parse(jsonString);
         this.state.set(loadedState);
@@ -58,7 +58,8 @@ export class Game {
             board: this.#board,
             deck: this.#deck,
             gameState: this.#gameState,
-            activeCards: this.#activeCards
+            activeCards: this.#activeCards,
+            isResetting: this.#isResetting,
         });
 
         localStorage.setItem("state", JSON.stringify(get(this.state)));
@@ -78,7 +79,10 @@ export class Game {
         for (let i = 0; i < this.#maxColumns * 2; i += 1) {
             setTimeout(this.draw, 50*i);
         }
-        setTimeout(() => {this.#isResetting = false}, 50*this.#maxColumns * 2)
+        setTimeout(() => {
+            this.#isResetting = false;
+            this.#render();
+        }, 50*this.#maxColumns * 2)
     }
 
     draw = (): void => {
