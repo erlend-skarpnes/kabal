@@ -44,7 +44,7 @@
         cursor: pointer;
     }
 
-    button:hover:enabled {
+    button:hover:enabled:not(.active) {
         box-shadow: 0 0 0 3px #646cff;
     }
 </style>
