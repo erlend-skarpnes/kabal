@@ -9,12 +9,18 @@
         game.pick(card)
     }
 
+    let screenWidth: number = window.innerWidth;
+
     let anchorEl: HTMLElement;
 
     let gameState = game.state;
 </script>
 
+<svelte:window bind:innerWidth={screenWidth}/>
 <main>
+    {#if screenWidth < 700}
+        For smal skjerm til å spille kabal! Legg telefonen på siden eller gjør vinduet bredere.
+    {:else}
     <div class="play-area">
         <div class="column" bind:this={anchorEl}>
             {#if $gameState.deck.length > 0}
@@ -45,6 +51,7 @@
     {/if}
     {#if $gameState.gameState === "lost"}
         <p>Du tapte!</p>
+    {/if}
     {/if}
 </main>
 
