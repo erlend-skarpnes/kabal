@@ -1,6 +1,6 @@
 import cards from "@younestouati/playing-cards-standard-deck";
 import type { CardValue } from "./Card.svelte";
-import {writable, type Writable} from "svelte/store";
+import {writable, get, type Writable} from "svelte/store";
 
 type GameState = "playing" | "won" | "lost";
 
@@ -30,10 +30,26 @@ export class Game {
 
     constructor(maxColumns: number) {
         this.#maxColumns = maxColumns;
-        this.resetGame();
-        for (let i = 10; i < this.#maxColumns; i -= 1) {
-            this.draw();
+        if (!this.#loadGame()) {
+            console.log("could not load game");
+            this.resetGame();
         }
+    }
+
+    #loadGame = () => {
+        const jsonString = localStorage.getItem("state");
+        console.log(jsonString)
+        if (jsonString == null) return false;
+        const loadedState: State = JSON.parse(jsonString);
+        this.state.set(loadedState);
+        localStorage.setItem("state", JSON.stringify(loadedState))
+        this.#activeColumn = loadedState.activeColumn;
+        this.#activeCards = loadedState.activeCards;
+        this.#board = loadedState.board;
+        this.#deck = loadedState.deck;
+        this.#gameState = loadedState.gameState;
+        this.#isResetting = false;
+        return true;
     }
 
     #render = () => {
@@ -44,6 +60,8 @@ export class Game {
             gameState: this.#gameState,
             activeCards: this.#activeCards
         });
+
+        localStorage.setItem("state", JSON.stringify(get(this.state)));
     }
 
     resetGame = async () => {
