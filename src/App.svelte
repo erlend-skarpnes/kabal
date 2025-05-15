@@ -27,10 +27,11 @@
                 <div class="deck">
                     <Cardback onClick={game.draw} />
                 </div>
+            {/if}
                 <div class="actions">
                     <button onclick={game.resetGame}>Nytt spill</button>
                 </div>
-            {/if}
+
         </div>
         {#each $gameState.board as column, columnIndex}
             <div class="column">
