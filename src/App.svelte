@@ -34,7 +34,7 @@
 
         </div>
         {#each $gameState.board as column, columnIndex}
-            <div class="column">
+            <div class="column {$gameState.activeColumn === columnIndex ? 'active' : ''}">
                 {#each column as card, stackIndex}
                     <Card value={card} stackIndex={stackIndex} picked={$gameState.activeCards.includes(card)}
                           onClick={() => {
@@ -71,12 +71,18 @@
     .play-area {
         display: grid;
         grid-template-columns: repeat(9, 1fr);
-        gap: 1rem;
     }
 
     .column {
         display: flex;
         flex-direction: column;
+        padding: 0.5rem;
+        height: fit-content;
+        transition: background-color 1s ease;
+    }
+
+    .active {
+        background-color: #72746F;
     }
 
     .deck {
