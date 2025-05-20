@@ -9,32 +9,41 @@
         game.pick(card)
     }
 
-    let screenWidth: number = window.innerWidth;
+    const scrollIntoView = (columnIndex: number) => {
+        const el = document.getElementById(`column-${columnIndex}`);
+        if (!el) return;
+        el.scrollIntoView({
+            behavior: 'smooth',
+            inline: "center"
+        });
+    }
 
-    let anchorEl: HTMLElement;
+    $effect(() => {
+        scrollIntoView($gameState.activeColumn);
+    })
+
+    let screenWidth: number = $state(window.innerWidth);
+
+    let anchorEl: HTMLElement | undefined = $state(undefined);
 
     let gameState = game.state;
 </script>
 
 <svelte:window bind:innerWidth={screenWidth}/>
 <main>
-    {#if screenWidth < 700}
-        For smal skjerm til å spille kabal! Legg telefonen på siden eller gjør vinduet bredere.
-    {:else}
-    <div class="play-area">
-        <div class="column" bind:this={anchorEl}>
-            {#if $gameState.deck.length > 0}
-                <div class="deck">
-                    <Cardback onClick={game.draw} />
-                </div>
-            {/if}
-                <div class="actions">
-                    <button onclick={game.resetGame} disabled={$gameState.isResetting}>Nytt spill</button>
-                </div>
-
+    <div class="actions" bind:this={anchorEl}>
+        {#if $gameState.deck.length > 0}
+            <div class="deck">
+                <Cardback onClick={game.draw} />
+            </div>
+        {/if}
+        <div>
+            <button onclick={game.resetGame} disabled={$gameState.isResetting}>Nytt spill</button>
         </div>
+    </div>
+    <div class="play-area">
         {#each $gameState.board as column, columnIndex}
-            <div class="column {$gameState.activeColumn === columnIndex ? 'active' : ''}">
+            <div class="column {($gameState.activeColumn === columnIndex) && !$gameState.isResetting ? 'active' : ''}" id="column-{columnIndex}">
                 {#each column as card, stackIndex}
                     <Card value={card} stackIndex={stackIndex} picked={$gameState.activeCards.includes(card)}
                           onClick={() => {
@@ -53,24 +62,26 @@
     {#if $gameState.gameState === "lost"}
         <p>Du tapte!</p>
     {/if}
-    {/if}
 </main>
 
 <style>
     main {
         display: flex;
-        flex-direction: column;
-        align-items: center;
+        flex-direction: row;
     }
 
     .actions {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
         padding: 1rem 0;
-        max-width: 100%;
+        width: 150px;
     }
 
     .play-area {
         display: grid;
-        grid-template-columns: repeat(9, 1fr);
+        grid-template-columns: repeat(8, 150px);
+        overflow-x: scroll;
     }
 
     .column {
