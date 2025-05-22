@@ -10,29 +10,52 @@ interface State {
     deck: CardValue[]
     gameState: GameState;
     activeCards: CardValue[];
+    cardBackImage: string;
 }
 
 export class Game {
+    readonly #allCardBacks = [
+        "abstract.svg",
+        "abstract_clouds.svg",
+        "abstract_scene.svg",
+        "astronaut.svg",
+        "blue.svg",
+        "blue2.svg",
+        "cars.svg",
+        "castle.svg",
+        "fish.svg",
+        "frog.svg",
+        "red.svg",
+        "red2.svg"
+    ];
+    
     state: Writable<State> = writable({
         activeColumn: 0,
         board: [],
         deck: [],
         gameState: "playing",
         activeCards: [],
+        cardBackImage: this.#getRandomCardBack()
     });
     #activeColumn: number = -1;
     #activeCards: CardValue[] = [];
     #board: CardValue[][] = [];
     #deck: CardValue[] = [];
     #gameState: GameState = "playing";
+    #cardBackImage: string = "";
     readonly #maxColumns: number = 0;
     #isResetting: boolean = false;
 
     constructor(maxColumns: number) {
         this.#maxColumns = maxColumns;
+        this.#cardBackImage = this.#getRandomCardBack();
         if (!this.#loadGame()) {
             this.resetGame();
         }
+    }
+    
+    #getRandomCardBack(): string {
+        return this.#allCardBacks[Math.floor(Math.random() * this.#allCardBacks.length)];
     }
 
     #loadGame = () => {
@@ -46,9 +69,10 @@ export class Game {
         this.#board = loadedState.board;
         this.#deck = loadedState.deck;
         this.#gameState = loadedState.gameState;
+        this.#cardBackImage = loadedState.cardBackImage || this.#getRandomCardBack();
         return true;
     }
-
+    
     #render = () => {
         this.state.set({
             activeColumn: this.#activeColumn,
@@ -56,6 +80,7 @@ export class Game {
             deck: this.#deck,
             gameState: this.#gameState,
             activeCards: this.#activeCards,
+            cardBackImage: this.#cardBackImage
         });
 
         localStorage.setItem("state", JSON.stringify(get(this.state)));
@@ -68,6 +93,9 @@ export class Game {
         this.#activeCards = [];
         this.#deck = Object.keys(cards).filter(card => card !== "joker") as CardValue[];
         this.#shuffleDeck();
+        
+        // Get a new random card back
+        this.#cardBackImage = this.#getRandomCardBack();
         
         // Clear the board
         this.#board = [];

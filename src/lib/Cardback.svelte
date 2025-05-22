@@ -1,27 +1,10 @@
 <script lang="ts">
-    const allCardBacks = [
-        "abstract.svg",
-        "abstract_clouds.svg",
-        "abstract_scene.svg",
-        "astronaut.svg",
-        "blue.svg",
-        "blue2.svg",
-        "cars.svg",
-        "castle.svg",
-        "fish.svg",
-        "frog.svg",
-        "red.svg",
-        "red2.svg"
-    ]
-
-    const randomCardBack = allCardBacks[Math.floor(Math.random() * allCardBacks.length)];
-
-    const {onClick}: {onClick: () => void} = $props();
+    const {onClick, imagePath}: {onClick: () => void, imagePath: string} = $props();
 </script>
 
 <div class="cardback-container">
     <button onclick={onClick}>
-        <img src="cardbacks/{randomCardBack}" alt="card back" />
+        <img src="cardbacks/{imagePath}" alt="card back" />
     </button>
 </div>
 

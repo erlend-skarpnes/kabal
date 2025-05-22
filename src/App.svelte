@@ -34,7 +34,7 @@
         <div class="actions" bind:this={anchorEl}>
             {#if $gameState.deck.length > 0}
                 <div class="deck">
-                    <Cardback onClick={game.draw} disabled={$gameState.gameState === "dealing"} />
+                    <Cardback onClick={game.draw} imagePath={$gameState.cardBackImage} disabled={$gameState.gameState === "dealing"} />
                 </div>
             {/if}
             <div>
