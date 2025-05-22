@@ -10,7 +10,6 @@ interface State {
     deck: CardValue[]
     gameState: GameState;
     activeCards: CardValue[];
-    isResetting: boolean;
 }
 
 export class Game {
@@ -20,7 +19,6 @@ export class Game {
         deck: [],
         gameState: "playing",
         activeCards: [],
-        isResetting: false
     });
     #activeColumn: number = -1;
     #activeCards: CardValue[] = [];
@@ -48,7 +46,6 @@ export class Game {
         this.#board = loadedState.board;
         this.#deck = loadedState.deck;
         this.#gameState = loadedState.gameState;
-        this.#isResetting = false;
         return true;
     }
 
@@ -59,7 +56,6 @@ export class Game {
             deck: this.#deck,
             gameState: this.#gameState,
             activeCards: this.#activeCards,
-            isResetting: this.#isResetting,
         });
 
         localStorage.setItem("state", JSON.stringify(get(this.state)));
@@ -75,14 +71,12 @@ export class Game {
         for (let i = 0; i < this.#maxColumns; i += 1) {
             this.#board.push([]);
         }
-        this.#render();
+
         for (let i = 0; i < this.#maxColumns * 2; i += 1) {
-            setTimeout(this.draw, 50*i);
+            this.draw();
         }
-        setTimeout(() => {
-            this.#isResetting = false;
-            this.#render();
-        }, 50*this.#maxColumns * 2)
+        this.#isResetting = false;
+        this.#render();
     }
 
     draw = (): void => {
