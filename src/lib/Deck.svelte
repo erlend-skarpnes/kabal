@@ -1,9 +1,9 @@
 <script lang="ts">
-    const {onClick, imagePath}: {onClick: () => void, imagePath: string} = $props();
+    const {onClick, imagePath, disabled}: {onClick: () => void, imagePath: string, disabled: boolean} = $props();
 </script>
 
 <div class="cardback-container">
-    <button onclick={onClick}>
+    <button onclick={onClick} disabled={disabled}>
         <img src="cardbacks/{imagePath}" alt="card back" />
     </button>
 </div>
