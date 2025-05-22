@@ -2,7 +2,7 @@ import cards from "@younestouati/playing-cards-standard-deck";
 import type { CardValue } from "./Card.svelte";
 import {writable, get, type Writable} from "svelte/store";
 
-type GameState = "playing" | "won" | "lost";
+type GameState = "playing" | "won" | "lost" | "dealing";
 
 interface State {
     activeColumn: number;
@@ -63,20 +63,37 @@ export class Game {
 
     resetGame = async () => {
         this.#isResetting = true;
-        this.#gameState = "playing";
+        this.#gameState = "dealing";
         this.#activeColumn = -1;
+        this.#activeCards = [];
         this.#deck = Object.keys(cards).filter(card => card !== "joker") as CardValue[];
         this.#shuffleDeck();
+        
+        // Clear the board
         this.#board = [];
         for (let i = 0; i < this.#maxColumns; i += 1) {
             this.#board.push([]);
         }
-
-        for (let i = 0; i < this.#maxColumns * 2; i += 1) {
-            this.draw();
-        }
-        this.#isResetting = false;
         this.#render();
+
+        // Give the old cards time to resolve their animation
+        await new Promise(resolve => setTimeout(resolve, 200));
+
+        // Deal cards with animation
+        const totalCards = this.#maxColumns * 2;
+        await this.#dealCards(totalCards);
+        
+        this.#isResetting = false;
+        this.#gameState = "playing";
+        this.#render();
+    }
+    
+    #dealCards = async (count: number): Promise<void> => {
+        for (let i = 0; i < count; i++) {
+            this.draw();
+            // Wait for animation to complete before dealing next card
+            await new Promise(resolve => setTimeout(resolve, 100));
+        }
     }
 
     draw = (): void => {

@@ -34,11 +34,13 @@
         <div class="actions" bind:this={anchorEl}>
             {#if $gameState.deck.length > 0}
                 <div class="deck">
-                    <Cardback onClick={game.draw} />
+                    <Cardback onClick={game.draw} disabled={$gameState.gameState === "dealing"} />
                 </div>
             {/if}
             <div>
-                <button onclick={game.resetGame}>Nytt spill</button>
+                <button onclick={game.resetGame} disabled={$gameState.gameState === "dealing"}>
+                    {$gameState.gameState === "dealing" ? "Deler ut..." : "Nytt spill"}
+                </button>
             </div>
         </div>
         <div class="play-area">
