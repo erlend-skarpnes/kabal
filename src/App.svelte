@@ -1,7 +1,7 @@
 <script lang="ts">
     import Card, {type CardValue} from "./lib/Card.svelte";
     import {Game} from "./lib/game";
-    import Cardback from "./lib/Cardback.svelte";
+    import Deck from "./lib/Deck.svelte";
 
     const game = new Game(8);
 
@@ -34,7 +34,7 @@
         <div class="actions" bind:this={anchorEl}>
             {#if $gameState.deck.length > 0}
                 <div class="deck">
-                    <Cardback onClick={game.draw} imagePath={$gameState.cardBackImage} disabled={$gameState.gameState === "dealing"} />
+                    <Deck onClick={game.draw} imagePath={$gameState.cardBackImage} disabled={$gameState.gameState === "dealing"} />
                 </div>
             {/if}
             <div>
