@@ -19,10 +19,12 @@
         box-sizing: border-box;
         width: 100%;
         display: block;
+        aspect-ratio: var(--card-aspect-ratio);
     }
 
     .card-container {
         box-shadow: 0 -3px 3px #1a1a1a;
+        width: 100%;
     }
 
     .active {
@@ -35,6 +37,7 @@
 
     button {
         all: unset;
+        width: 100%;
         padding: 0;
         display: block;
         transition: box-shadow 0.1s;
