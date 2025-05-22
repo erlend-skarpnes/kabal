@@ -13,7 +13,7 @@
         const el = document.getElementById(`column-${columnIndex}`);
         if (!el) return;
         el.scrollIntoView({
-            behavior: 'smooth',
+            behavior: "smooth",
             inline: "center"
         });
     }
@@ -38,12 +38,12 @@
                 </div>
             {/if}
             <div>
-                <button onclick={game.resetGame} disabled={$gameState.isResetting}>Nytt spill</button>
+                <button onclick={game.resetGame}>Nytt spill</button>
             </div>
         </div>
         <div class="play-area">
             {#each $gameState.board as column, columnIndex}
-                <div class="column {($gameState.activeColumn === columnIndex) && !$gameState.isResetting ? 'active' : ''}" id="column-{columnIndex}">
+                <div class="column {$gameState.activeColumn === columnIndex ? 'active' : ''}" id="column-{columnIndex}">
                     {#each column as card, stackIndex (card)}
                         <Card value={card} stackIndex={stackIndex} picked={$gameState.activeCards.includes(card)}
                               onClick={() => {
