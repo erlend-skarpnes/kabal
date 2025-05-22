@@ -44,7 +44,7 @@
     <div class="play-area">
         {#each $gameState.board as column, columnIndex}
             <div class="column {($gameState.activeColumn === columnIndex) && !$gameState.isResetting ? 'active' : ''}" id="column-{columnIndex}">
-                {#each column as card, stackIndex}
+                {#each column as card, stackIndex (card)}
                     <Card value={card} stackIndex={stackIndex} picked={$gameState.activeCards.includes(card)}
                           onClick={() => {
                           toggleActiveCard(card)
@@ -65,6 +65,11 @@
 </main>
 
 <style>
+    :global(:root) {
+        --card-width: clamp(140px, 15vw, 200px);
+        --card-aspect-ratio: 2.5 / 3.5; /* Standard playing card ratio */
+    }
+
     main {
         display: flex;
         flex-direction: row;
@@ -74,14 +79,23 @@
         display: flex;
         flex-direction: column;
         gap: 2rem;
-        padding: 1rem 0;
-        width: 150px;
+        padding: 0.5rem;
+        width: var(--card-width);
+        flex-shrink: 0; /* Prevent shrinking */
     }
 
     .play-area {
         display: grid;
-        grid-template-columns: repeat(8, 150px);
+        grid-template-columns: repeat(8, var(--card-width));
         overflow-x: scroll;
+    }
+
+    .play-area::-webkit-scrollbar {
+        display: none;
+    }
+
+    .play-area {
+        scrollbar-width: none;
     }
 
     .column {
@@ -98,6 +112,8 @@
 
     .deck {
         z-index: 9;
+        width: 100%;
+        flex-shrink: 0; /* Prevent shrinking */
     }
 
 </style>
