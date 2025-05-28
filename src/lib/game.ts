@@ -209,12 +209,12 @@ export class Game {
     play = () => {
         let sum = this.#activeCards.reduce((acc, curr) => acc + this.#getValue(curr), 0);
 
-        if (![10, 20, 30].includes(sum)) {
-            console.log("Not a valid move");
-            this.#activeCards = [];
-            this.#render();
-            return
-        }
+        // if (![10, 20, 30].includes(sum)) {
+        //     console.log("Not a valid move");
+        //     this.#activeCards = [];
+        //     this.#render();
+        //     return
+        // }
 
         this.#deck = [...this.#activeCards, ...this.#deck];
         this.#board[this.#activeColumn] = this.#board[this.#activeColumn].filter(c => !this.#activeCards.includes(c));
