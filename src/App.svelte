@@ -2,6 +2,7 @@
     import Card, {type CardValue} from "./lib/Card.svelte";
     import {Game} from "./lib/game";
     import Deck from "./lib/Deck.svelte";
+    import {fireworkConfetti} from "./lib/confetti";
 
     const game = new Game(8);
 
@@ -20,7 +21,13 @@
 
     $effect(() => {
         scrollIntoView($gameState.activeColumn);
-    })
+    });
+
+    $effect(() => {
+        if ($gameState.gameState === "won") {
+            fireworkConfetti(10);
+        }
+    });
 
     let screenWidth: number = $state(window.innerWidth);
 
@@ -43,26 +50,33 @@
                 </button>
             </div>
         </div>
-        <div class="play-area">
+        {#if $gameState.gameState === "playing" || $gameState.gameState === "dealing"}
+            <div class="play-area">
             {#each $gameState.board as column, columnIndex}
-                <div class="column {$gameState.activeColumn === columnIndex ? 'active' : ''}" id="column-{columnIndex}">
-                    {#each column as card, stackIndex (card)}
-                        <Card value={card} stackIndex={stackIndex} picked={$gameState.activeCards.includes(card)}
-                              onClick={() => {
-                              toggleActiveCard(card)
-                              }}
-                              transitionStartElement={anchorEl}
-                              active={$gameState.activeColumn === columnIndex}
-                        />
-                    {/each}
-                </div>
-            {/each}
-        </div>
+                    <div class="column {$gameState.activeColumn === columnIndex ? 'active' : ''}" id="column-{columnIndex}">
+                        {#each column as card, stackIndex (card)}
+                            <Card value={card} stackIndex={stackIndex} picked={$gameState.activeCards.includes(card)}
+                                  onClick={() => {
+                                  toggleActiveCard(card)
+                                  }}
+                                  transitionStartElement={anchorEl}
+                                  active={$gameState.activeColumn === columnIndex}
+                            />
+                        {/each}
+                    </div>
+                {/each}
+            </div>
+        {/if}
         {#if $gameState.gameState === "won"}
-            <p>Du vant!</p>
+            <div class="message">
+                <p>Du vant!</p>
+                <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/3GwjfUFyY6M?si=vdFDDpSOKQyYRZV9&amp;controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            </div>
         {/if}
         {#if $gameState.gameState === "lost"}
-            <p>Du tapte!</p>
+            <div class="message">
+                <p>Du tapte!</p>
+            </div>
         {/if}
     </main>
 
@@ -86,6 +100,14 @@
         padding: 0.5rem;
         width: var(--card-width);
         flex-shrink: 0; /* Prevent shrinking */
+    }
+
+    .message {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 50vw;
     }
 
     .play-area {
