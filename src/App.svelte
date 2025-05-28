@@ -3,7 +3,6 @@
     import {Game} from "./lib/game";
     import Deck from "./lib/Deck.svelte";
     import {fireworkConfetti} from "./lib/confetti";
-    import '@justinribeiro/lite-youtube';
 
     const game = new Game(8);
 
@@ -71,7 +70,6 @@
         {#if $gameState.gameState === "won"}
             <div class="message">
                 <p>Du vant!</p>
-                <lite-youtube videoid="3GwjfUFyY6M"></lite-youtube>
             </div>
         {/if}
         {#if $gameState.gameState === "lost"}
