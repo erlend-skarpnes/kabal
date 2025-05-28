@@ -3,6 +3,7 @@
     import {Game} from "./lib/game";
     import Deck from "./lib/Deck.svelte";
     import {fireworkConfetti} from "./lib/confetti";
+    import '@justinribeiro/lite-youtube';
 
     const game = new Game(8);
 
@@ -70,7 +71,7 @@
         {#if $gameState.gameState === "won"}
             <div class="message">
                 <p>Du vant!</p>
-                <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/3GwjfUFyY6M?si=vdFDDpSOKQyYRZV9&amp;controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                <lite-youtube videoid="3GwjfUFyY6M"></lite-youtube>
             </div>
         {/if}
         {#if $gameState.gameState === "lost"}
